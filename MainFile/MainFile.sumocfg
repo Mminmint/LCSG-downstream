@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <input>
+        <net-file value="MainFile.net.xml"/>
+        <route-files value="MainFile.rou.xml"/>
+        <additional-files value="emission_addition.xml"/>
+    </input>
+
+    <time>
+        <begin value="0"/>
+        <end value="1500"/>
+        <step-length value="1"/>
+    </time>
+
+    <output>
+        <tripinfo-output value="../output/veh2000.xml"/>
+    </output>
+    
+    <processing>
+        <lanechange.duration value="3"/>
+    </processing>
+
+    <gui_only>
+        <start value="true"/>
+
+    </gui_only>
+
+</configuration>

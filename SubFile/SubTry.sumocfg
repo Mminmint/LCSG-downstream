@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <input>
+        <net-file value="SubTry.net.xml"/>
+        <route-files value="SubTry.rou.xml"/>
+        <additional-files value="e1_addition.xml"/>
+    </input>
+ 
+    <time>
+        <begin value="0"/>
+        <end value="60"/>
+        <step-length value="1"/>
+    </time>
+
+    <processing>
+        <lanechange.duration value="3"/>
+    </processing>
+
+    <gui_only>
+        <start value="true"/>
+    </gui_only>
+
+</configuration>

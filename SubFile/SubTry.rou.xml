@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<vType id="HV" accel="2" decel="4.5" sigma="0.5" length="5" maxSpeed="20" carFollowModel="IDM" actionStepLenth="1" lcStrategic="0" lcKeepRight="0" lcCooperative="0.5" lcSpeedGain="1"/>
+	<vType id="CV" accel="2" decel="4.5" sigma="0.5" length="5" maxSpeed="20" carFollowModel="IDM" actionStepLenth="1" lcStrategic="0.5" lcKeepRight="0" lcCooperative="1" lcSpeedGain="0.5"/>
+	<vType id="CAV" accel="2" decel="4.5" sigma="0.5" length="5" maxSpeed="20" minGap="2" carFollowModel="Krauss" actionStepLenth="1" lcStrategic="-1" lcKeepRight="0" lcCooperative="-1" lcSpeedGain="0"/>
+
+	<vehicle id="0" type="HV" depart="0">
+		<route edges="o"/>
+	</vehicle> 
+
+</routes>

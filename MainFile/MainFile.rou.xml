@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<vType id="HV" accel="2" decel="4.5" sigma="0.5" length="5" maxSpeed="20" carFollowModel="IDM" actionStepLenth="1" lcStrategic="0" lcKeepRight="0" lcCooperative="0.5" lcSpeedGain="1"/>
+	<vType id="CV" accel="2" decel="4.5" sigma="0.5" length="5" maxSpeed="20" carFollowModel="IDM" actionStepLenth="1" lcStrategic="0.5" lcKeepRight="0" lcCooperative="1" lcSpeedGain="0.5"/>
+	<vType id="CAV" accel="2" decel="4.5" sigma="0.5" length="5" maxSpeed="20" minGap="2" carFollowModel="Krauss" actionStepLenth="1" lcStrategic="0.5" lcKeepRight="0" lcCooperative="1" lcSpeedGain="0.5"/>
+
+	<!--	所有可能交通流		-->
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="WM1" to="WM5"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="WM1" to="WO1"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="WM1" to="WO2"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="WI1" to="WM5"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="WI1" to="WO2"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="EM1" to="EM5"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="EM1" to="EO2"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="EI1" to="EO1"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="EI1" to="EO2"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="EI2" to="WM5"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="EI2" to="EO2"/>
+	<flow id="hv" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="1200" type="HV" from="EI3" to="WM5"/>
+
+	<!--	CV及CAV同理		-->
+    <flow id="cv" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="400" type="CV" from="Input" to="Output"/>
+    <flow id="cav" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="3600" vehsPerHour="400" type="CAV" from="Input" to="Output"/>
+
+</routes>

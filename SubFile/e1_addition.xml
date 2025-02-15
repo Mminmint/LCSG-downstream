@@ -1,0 +1,4 @@
+<additional>
+   <laneAreaDetector id="e1" lane="Output_0" pos="190" endPos="200" freq="1500" file="NUL" friendlyPos="true"/>
+   <laneAreaDetector id="e2" lane="Output_1" pos="190" endPos="200" freq="1500" file="NUL" friendlyPos="true"/>
+</additional>
