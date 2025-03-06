@@ -3,9 +3,9 @@
 <configuration>
 
     <input>
-        <net-file value="MainFile.net.xml"/>
-        <route-files value="MainFile.rou.xml"/>
-        <additional-files value="emission_addition.xml"/>
+        <net-file value="MAGIC.net.xml"/>
+        <route-files value="MAGIC.rou.xml"/>
+        <additional-files value="e1.addition.xml"/>
     </input>
 
     <time>

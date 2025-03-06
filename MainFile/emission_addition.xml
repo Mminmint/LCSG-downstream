@@ -1,3 +1,0 @@
-<additional>
-   <edgeData id="emissionDect" type="emissions" period="900" begin="600" file="../output/emission2000.xml" excludeEmpty="true"/>
-</additional>
