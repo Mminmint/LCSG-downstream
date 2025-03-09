@@ -43,14 +43,14 @@ class Vehicle:
         position = traci.vehicle.getLanePosition(self.vehId)
         self.rePosition = position
 
-        if "Input" in lane:
+        if "M" in lane:
             tag = lane[-3]
-            if tag == "1":
-                position += 500
-            elif tag == "2":
-                position += 1000
+            if tag == "2":
+                position += 425
             elif tag == "3":
-                position += 1500
+                position += 925
+            elif tag == "4":
+                position += 1420
         return position
 
 
@@ -76,9 +76,16 @@ class Vehicle:
     '''
     def updateLCInfo(self,step:int):
         curLane = traci.vehicle.getLaneID(self.vehId)
-        if self.type and int(curLane[-1]) != int(self.lane[-1]):
-            self.lastLCTime = step      # int
-            self.totalLCTimes += 1
+        if self.type:
+            # 由两车道路段到三车道路段，lane编号会突变
+            if "M3" in self.lane and "M4" in curLane:
+                if int(curLane[-1]) != int(self.lane[-1])+1:
+                    self.lastLCTime = step  # int
+                    self.totalLCTimes += 1
+            # 其他情况
+            if int(curLane[-1]) != int(self.lane[-1]):
+                self.lastLCTime = step      # int
+                self.totalLCTimes += 1
         self.lane = curLane
         self.laneIndex = int(self.lane[-1])
 
@@ -87,8 +94,8 @@ class Vehicle:
     为符合条件的HV执行静态晚合流控制
     Application: HVs
     '''
-    def staticLateMerge(self):
-        if 1450 < self.position < 1550:
+    def staticLateMerge(self,botPos):
+        if botPos-250 < self.position < botPos-150:
             traci.vehicle.setLaneChangeMode(self.vehId, 0b010101000101)
             self.LCModel = 0b010101000101
 

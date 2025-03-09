@@ -144,10 +144,10 @@ def avgSpeed(allVehs,horizon,detectOut) -> float:
 suggestCvLC:{'cv.1':'Input.1_2','cv.16':'Input.2_2'}
 suggestCavLC:{'cav.1':'Input.1_2','cav.16':'Input.2_2'}
 '''
-def simExecute(allVehs,suggestLC,suggestSG,simID,queue,speedLimits):
+def simExecute(allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LCReactTimes,SGReactTimes,realTargetSpeeds):
     result = 0
     detectOut = {}
-    edgeList = ['Input', 'Input.1', 'Input.2', 'Input.3']
+    edgeList = ['M1', 'M2', 'M3', 'M4']
 
     try:
         sumoCmd = startSUMO(False, "SubFile/SubTry.sumocfg")
@@ -156,8 +156,6 @@ def simExecute(allVehs,suggestLC,suggestSG,simID,queue,speedLimits):
         traci.switch(f'Sub_{simID}')
 
         totalStep = 60
-        avgLCReactTime = 3      # todo: 灵敏度分析参数
-        avgSGReactTime = 3      # todo: 灵敏度分析参数
 
         for step in range(totalStep):
             traci.simulationStep()

@@ -13,7 +13,8 @@ from typing import Tuple
 
 class Vehicles:
 
-    def __init__(self):
+    def __init__(self,botPos):
+        self.botPos = botPos
         self.vehs = {}
         self.lastVehs = {}
         self.prepareLC = [{},{},{},{},{}]      # todo:敏感性参数
@@ -26,7 +27,7 @@ class Vehicles:
     获得optVehs
     ps: lastVehs和vehs引用的是一个对象，属性值改了会一起变
     '''
-    def initVehs(self,step:int,curVehs:Tuple):
+    def initVehs(self,step:int,curVehs):
         self.step = step
         self.optVehs = {}
 
@@ -42,7 +43,7 @@ class Vehicles:
 
             # 对车辆进行分类
             if not veh.type:
-                veh.staticLateMerge()
+                veh.staticLateMerge(self.botPos)
             else:
                 if "Input" in veh.lane:
                     self.addOptVeh(veh)
@@ -67,9 +68,9 @@ class Vehicles:
     为超过控制范围的车辆设置晚合流控制
     '''
     def addOptVeh(self,veh:Vehicle):
-        if 0 < veh.position < 1500:
+        if veh.position < self.botPos-250:
             self.optVehs[veh.vehId] = veh
-        elif 1750 <= veh.position < 1850:
+        elif self.botPos-250 <= veh.position < self.botPos-150:
             traci.vehicle.setLaneChangeMode(veh.vehId, 0b011000001001)
             veh.LCModel = 0b011000001001
 

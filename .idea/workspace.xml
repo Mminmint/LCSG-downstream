@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2ac66eb6-9550-477b-ac31-f757f5fed4f3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainFile/MAGIC.net.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MainFile/MAGIC.net.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainFile/MAGIC.rou.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MainFile/MAGIC.rou.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainFile/e1.addition.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MainFile/e1.addition.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SubFile/SubTry.net.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/genRouXml.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/optimizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/det_output.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/veh2000.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simPredict.py" beforeDir="false" afterPath="$PROJECT_DIR$/simPredict.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vehicle.py" beforeDir="false" afterPath="$PROJECT_DIR$/vehicle.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vehicles.py" beforeDir="false" afterPath="$PROJECT_DIR$/vehicles.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2rU4dSo4KDHs4kUV6Wgvnwx387d" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Chapter4/LCSG-multiLanes/main.py" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../../Chapter4/LCSG-multiLanes/main.py" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2ac66eb6-9550-477b-ac31-f757f5fed4f3" name="Changes" comment="" />
+      <created>1736600407800</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1736600407800</updated>
+      <workItem from="1736600409490" duration="1191000" />
+      <workItem from="1739618798033" duration="1421000" />
+      <workItem from="1739708654055" duration="1582000" />
+      <workItem from="1741253356863" duration="419000" />
+      <workItem from="1741253835471" duration="5118000" />
+      <workItem from="1741497279287" duration="11865000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
