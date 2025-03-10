@@ -10,16 +10,13 @@ from __future__ import print_function
 import time
 
 import traci
-import os, sys
+import sys
 import math
-import optparse
-import copy
 
 import toolFunction
 from typing import List
 from vehicles import Vehicles
 from optimizer import Optimizer
-
 
 '''
 将可换道的车辆字典转换为列表形式，并给出车道区分
@@ -143,8 +140,8 @@ def run():
 
     vehicles1 = Vehicles(botPos1)
     vehicles2 = Vehicles(botPos2)
-    optimizer1 = Optimizer(originPopNum=20,popNum=6,iterTimes=10,sameBestTimes=3,crossParam=0.6,mutationParam=0.1)
-    optimizer2 = Optimizer(originPopNum=20,popNum=6,iterTimes=10,sameBestTimes=3,crossParam=0.6,mutationParam=0.1)
+    optimizer1 = Optimizer(originPopNum=20,popNum=6,iterTimes=10,sameBestTimes=3,crossParam=0.6,mutationParam=0.1,multiTag=0)
+    optimizer2 = Optimizer(originPopNum=20,popNum=6,iterTimes=10,sameBestTimes=3,crossParam=0.6,mutationParam=0.1,multiTag=1)
 
     start = time.time()
 

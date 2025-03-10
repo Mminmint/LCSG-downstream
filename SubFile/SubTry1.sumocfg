@@ -3,9 +3,9 @@
 <configuration>
 
     <input>
-        <net-file value="SubTry.net.xml"/>
+        <net-file value="SubTry1.net.xml"/>
         <route-files value="SubTry.rou.xml"/>
-        <additional-files value="e1_addition.xml"/>
+        <additional-files value="addition1.xml"/>
     </input>
  
     <time>

@@ -144,14 +144,21 @@ def avgSpeed(allVehs,horizon,detectOut) -> float:
 suggestCvLC:{'cv.1':'Input.1_2','cv.16':'Input.2_2'}
 suggestCavLC:{'cav.1':'Input.1_2','cav.16':'Input.2_2'}
 '''
-def simExecute(allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LCReactTimes,SGReactTimes,realTargetSpeeds):
+def simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LCReactTimes,SGReactTimes,realTargetSpeeds):
     result = 0
     detectOut = {}
-    edgeList = ['M1', 'M2', 'M3', 'M4']
+
+    if cfgFileTag == 1:
+        edgeList = ['M1', 'M2', 'M3']
+        cfgFile = "SubFile/SubTry1.sumocfg"
+        detectors = ["e0", "e1"]
+    else:
+        edgeList = ['M3', 'M4']
+        cfgFile = "SubFile/SubTry2.sumocfg"
+        detectors = ["e0", "e1", "e2"]
 
     try:
-        sumoCmd = startSUMO(False, "SubFile/SubTry.sumocfg")
-
+        sumoCmd = startSUMO(False,cfgFile)
         traci.start(sumoCmd,label=f'Sub_{simID}')
         traci.switch(f'Sub_{simID}')
 
@@ -160,11 +167,11 @@ def simExecute(allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LCReactTimes,
         for step in range(totalStep):
             traci.simulationStep()
 
-            if traci.lanearea.getLastStepVehicleIDs("e1"):
-                for vehId in traci.lanearea.getLastStepVehicleIDs("e1"):
-                    detectOut[vehId] = step
-                for vehId in traci.lanearea.getLastStepVehicleIDs("e2"):
-                    detectOut[vehId] = step
+            for detector in detectors:
+                outVehs = traci.lanearea.getLastStepVehicleIDs(detector)
+                if outVehs:
+                    for vehId in outVehs:
+                        detectOut[vehId] = step
 
             if step == 0:
                 addSimVehs(allVehs,speedLimits)
@@ -199,12 +206,9 @@ def simExecute(allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LCReactTimes,
             time.sleep(0.03)  # 在此等待以防止问题
 
     except Exception as e:
-        print(allVehs)
-        print(suggestSG)
         print(f"Error: {e}")
 
     finally:
         traci.close()
         # 将结果放入队列
         queue.put(result)
-        # print(f"process {simId} end in {time.time()}")

@@ -20,7 +20,7 @@ def multiProcess(processNum,vehs,suggestLCs,suggestSGs,speedLimits):
     for i in range(processNum):
         suggestLC = suggestLCs[i] if suggestLCs else []
         suggestSG = suggestSGs[i] if suggestSGs else []
-        p = multiprocessing.Process(target=simExecute, args=(vehs, suggestLC,suggestSG,i,queue,speedLimits))
+        p = multiprocessing.Process(target=simExecute, args=(1, vehs, suggestLC,suggestSG,i,queue,speedLimits))
         processes.append(p)
         p.start()
         # print(time.time())

@@ -5,28 +5,17 @@
 # @Software: PyCharm
 
 import random
-import traci
 import numpy as np
-# import matplotlib.pyplot as plt
 
 from copy import deepcopy
 from multiProcess import processExecute
 from toolFunction import nearestFive
 from operator import itemgetter
 from typing import List,Dict
-# from matplotlib import rcParams
-#
-# config = {
-#     "font.family": 'serif',
-#     "mathtext.fontset": 'stix',  # matplotlib渲染数学字体时使用的字体，和Times New Roman差别不大
-#     "font.serif": ['SimSun'],  # 宋体
-#     'axes.unicode_minus': False  # 处理负号，即-号
-# }
-# rcParams.update(config)
 
 
 class Optimizer:
-    def __init__(self,originPopNum,popNum,iterTimes,sameBestTimes,crossParam,mutationParam):
+    def __init__(self,originPopNum,popNum,iterTimes,sameBestTimes,crossParam,mutationParam,multiTag):
         self.originPopNum = originPopNum
         self.popNum = popNum
         self.iterTimes = iterTimes
@@ -35,6 +24,7 @@ class Optimizer:
         self.mutationParam = mutationParam
         self.bestLC = None
         self.bestSG = None
+        self.multiTag = multiTag
 
 
     '''初始化种群'''
@@ -44,21 +34,31 @@ class Optimizer:
         for _ in range(self.originPopNum):
             individual = {}
             if LCTag:
-                # lane0: -1,1   lane1: 0,-1,2   lane2: 1,-1
-                # 生成换道随机种子，不换道用-1表示
-                newLC = []
-                tmp = list(np.random.randint(0,2,self.LCBound[0]))
-                newLC.extend(list(map(lambda x: -1 if x == 0 else x, tmp)))
-                tmp = list(np.random.randint(0, 3, self.LCBound[1]-self.LCBound[0]))
-                newLC.extend(list(map(lambda x: -1 if x == 1 else x, tmp)))
-                tmp = list(np.random.randint(1, 3, self.LCBound[2]-self.LCBound[1]))
-                newLC.extend(list(map(lambda x: -1 if x == 2 else x, tmp)))
+                if self.multiTag:
+                    # lane0: -1,1   lane1: 0,-1,2   lane2: 1,-1
+                    # 生成换道随机种子，不换道用-1表示
+                    newLC = []
+                    tmp = list(np.random.randint(0, 2, self.LCBound[0]))
+                    newLC.extend(list(map(lambda x: -1 if x == 0 else x, tmp)))
+                    tmp = list(np.random.randint(0, 3, self.LCBound[1] - self.LCBound[0]))
+                    newLC.extend(list(map(lambda x: -1 if x == 1 else x, tmp)))
+                    tmp = list(np.random.randint(1, 3, self.LCBound[2] - self.LCBound[1]))
+                    newLC.extend(list(map(lambda x: -1 if x == 2 else x, tmp)))
+                else:
+                    # lane0: -1,1   lane1: -1,0
+                    # 生成换道随机种子，不换道用-1表示
+                    newLC = []
+                    tmp = list(np.random.randint(0,2,self.LCBound[0]))
+                    newLC.extend(list(map(lambda x: -1 if x == 0 else x, tmp)))
+                    tmp = list(np.random.randint(0, 2, self.LCBound[1]-self.LCBound[0]))
+                    newLC.extend(list(map(lambda x: -1 if x == 1 else x, tmp)))
+
                 individual["LC"] = newLC
 
             if SGTag:
                 # 生成变速随机种子
-                newSG,absSG = [],[]
-                refSG = [2.778,1.389,1.389,-1.389,-1.389,-1.389,-1.389,-2.778,-2.778,-2.778]
+                absSG,newSG = [],[]
+                refSG = [1.389, -1.389,1.389, -1.389,2.778, -2.778]
 
                 # 考虑车辆可能同时换道的可能性
                 if LCTag:
@@ -75,7 +75,7 @@ class Optimizer:
                             for i in range(5):
                                 choice = np.random.choice(refSG)
                                 targetSpeed = choice + self.readySGRef[vehId]
-                                if targetSpeed <= self.curMaxSpeed and targetSpeed >= 0:
+                                if targetSpeed <= self.curMaxSpeed and targetSpeed >= 2.778:
                                     absSG.append(choice)
                                     newSG.append(targetSpeed)
                                     break
@@ -92,7 +92,7 @@ class Optimizer:
                             for i in range(5):
                                 choice = np.random.choice(refSG)
                                 targetSpeed = choice + self.readySGRef[vehId]
-                                if targetSpeed <= self.curMaxSpeed and targetSpeed >= 0:
+                                if targetSpeed <= self.curMaxSpeed and targetSpeed >= 2.778:
                                     absSG.append(choice)
                                     newSG.append(targetSpeed)
                                     break
@@ -154,7 +154,7 @@ class Optimizer:
                 vehID = self.readySG[i]
                 targetSpeed = popSG[i]
                 if "cv" in vehID:
-                    targetSpeed = max((nearestFive(targetSpeed*3.6))/3.6,0)
+                    targetSpeed = (nearestFive(targetSpeed*3.6))/3.6
                 suggestSG[vehID] = targetSpeed
 
         return suggestSG
@@ -192,6 +192,7 @@ class Optimizer:
 
         minFit = sortPop[-1]['fit']
         sumFit = 0
+
         for individual in sortPop:
             individual['fitRef'] = individual['fit'] - minFit   # 归一化
             sumFit += individual['fitRef']
@@ -219,6 +220,7 @@ class Optimizer:
             # 交换换道区间
             pos1 = random.randrange(0, len(self.readyLC))
             pos2 = random.randrange(0, len(self.readyLC))
+
             if pos2 < pos1:
                 pos1,pos2 = pos2,pos1
 
@@ -229,8 +231,10 @@ class Optimizer:
             # 交换变速区间
             pos1 = random.randrange(0, len(self.readySG))
             pos2 = random.randrange(0, len(self.readySG))
+
             if pos2 < pos1:
                 pos1,pos2 = pos2,pos1
+
             crossOff1['SG'] = offSpring1['SG'][:pos1] + offSpring2['SG'][pos1:pos2] + offSpring1['SG'][pos2:]
             crossOff2['SG'] = offSpring2['SG'][:pos1] + offSpring1['SG'][pos1:pos2] + offSpring2['SG'][pos2:]
             crossOff1['absSG'] = offSpring1['absSG'][:pos1] + offSpring2['absSG'][pos1:pos2] + offSpring1['absSG'][pos2:]
@@ -259,14 +263,22 @@ class Optimizer:
     '''实现变异操作'''
     def mutation(self,crossOff,LCTag,SGTag):
         if LCTag:
-            # 选取变道变异点，依据可选择车道变异
-            pos = random.randrange(0, len(self.readyLC))
-            if self.LCBound[0] <= pos < self.LCBound[1]:
-                choice = [-1,0,2]
-                choice.remove(crossOff['LC'][pos])
-                crossOff['LC'][pos] = random.choice(choice)
+            if self.multiTag:
+                # 选取变道变异点，依据可选择车道变异
+                pos = random.randrange(0, len(self.readyLC))
+                if self.LCBound[0] <= pos < self.LCBound[1]:
+                    choice = [-1, 0, 2]
+                    choice.remove(crossOff['LC'][pos])
+                    crossOff['LC'][pos] = random.choice(choice)
+                else:
+                    crossOff['LC'][pos] = -crossOff['LC'][pos]
             else:
-                crossOff['LC'][pos] = -crossOff['LC'][pos]
+                # 选取变道变异点，依据可选择车道变异
+                pos = random.randrange(0, len(self.readyLC))
+                if pos < self.LCBound[0]:
+                    crossOff['LC'][pos] = -crossOff['LC'][pos]
+                else:
+                    crossOff['LC'][pos] = -(crossOff['LC'][pos]+1)
 
             if SGTag:
                 # 若变异后被建议换道，检查变速建议，置为0
@@ -277,73 +289,45 @@ class Optimizer:
                         crossOff['absSG'][index] = 0
 
         if SGTag:
+            mutationPoint = -1
             # 选取合适的变速变异点
-            while True:
+            for i in range(5):
                 pos = random.randrange(0, len(self.readySG))
                 if LCTag:
                     # 当选到的车辆在可变道集合中且被建议变道，重新选取
                     if self.readySG[pos] in self.readyLC and crossOff['LC'][self.readyLC.index(self.readySG[pos])] != -1:
                         continue
                 # 否则结束循环，此值有效
+                mutationPoint = pos
                 break
 
-            # 选取合适的变速变异值
-            choice = [2.778, 1.389, 1.389, -1.389, -1.389, -1.389, -1.389, -2.778, -2.778, -2.778]
-            # 若先前的车速建议不为0
-            if crossOff['SG'][pos]:
-                for i in range(5):
-                    value = random.choice([0, 1])
-                    if value:
-                        value = random.choice(choice)
-                    if value != crossOff['absSG'][pos]:
+            if mutationPoint != -1:
+                # 选取合适的变速变异值
+                choice = [1.389, -1.389,1.389, -1.389,2.778, -2.778]
+                # 若先前的车速建议不为0
+                if crossOff['SG'][pos]:
+                    for i in range(5):
+                        value = random.choice([0, 1])
+                        if value:
+                            value = -crossOff['absSG'][pos]
+                            targetSpeed = value + self.readySGRef[self.readySG[pos]]
+                            if targetSpeed <= self.curMaxSpeed and targetSpeed >= 2.778:
+                                crossOff['absSG'][pos] = value
+                                crossOff['SG'][pos] = targetSpeed
+                                break
+                # 若先前车速建议为0
+                else:
+                    value = random.choice(choice)
+                    for i in range(5):
                         targetSpeed = value + self.readySGRef[self.readySG[pos]]
-                        if targetSpeed <= self.curMaxSpeed and targetSpeed >= 0:
+                        if targetSpeed <= self.curMaxSpeed and targetSpeed >= 2.778:
                             crossOff['absSG'][pos] = value
                             crossOff['SG'][pos] = targetSpeed
                             break
-            # 若先前车速建议为0
-            else:
-                value = random.choice(choice)
-                for i in range(5):
-                    targetSpeed = value + self.readySGRef[self.readySG[pos]]
-                    if targetSpeed <= self.curMaxSpeed and targetSpeed >= 0:
-                        crossOff['absSG'][pos] = value
-                        crossOff['SG'][pos] = targetSpeed
-                        break
 
         crossOff['fit'] = -1
 
         return crossOff
-
-
-    # '''迭代图绘制'''
-    # def iterPlot(self,allFits):
-    #     plt.figure(figsize=(4, 2))
-    #     plt.plot(allFits)
-    #     plt.xlim([1, 20])
-    #     plt.xticks(range(1, self.popNum, 2))
-    #     plt.xlabel('迭代次数', fontsize=12)
-    #     plt.ylabel('平均行驶距离/m', fontsize=12)
-    #     plt.show()
-
-    def LCReactTime(self):
-        frequencyDict = {0: 0.019704433497536946, 1: 0.034482758620689655,
-                         2: 0.029556650246305417, 3: 0.019704433497536946,
-                         4: 0.07389162561576355, 5: 0.06896551724137931,
-                         6: 0.1330049261083744, 7: 0.14285714285714285,
-                         8: 0.08374384236453201, 9: 0.07881773399014778,
-                         10: 0.059113300492610835, 11: 0.08374384236453201,
-                         12: 0.06403940886699508, 13: 0.014778325123152709,
-                         14: 0.019704433497536946, 15: 0.009852216748768473,
-                         16: 0.029556650246305417, 17: 0.009852216748768473,
-                         18: 0.014778325123152709, 19: 0.009852216748768473}
-
-
-    # 随机采样函数
-    def sample_time(self,probability_dict, n_samples=1):
-        times = list(probability_dict.keys())
-        probs = list(probability_dict.values())
-        return np.random.choice(times, size=n_samples, p=probs)
 
 
     '''关联分析，判断驾驶引导建议涉及的车辆数'''
@@ -381,6 +365,7 @@ class Optimizer:
         # 参数初始化
         print('-------------start-------------')
         self.orgVehsInfo = orgVehsInfo
+        self.readyLC,self.readySG = [],[]
 
         LCTag = 1 if LCInfo is not None else 0
         SGTag = 1 if SGInfo is not None else 0
@@ -462,7 +447,6 @@ class Optimizer:
                 break
 
         print(allFits)
-        # self.iterPlot(allFits)
 
         if LCTag:
             bestLC = self.transReadyToSuggestLC(self.bestIndividual,self.readyLCRef)
