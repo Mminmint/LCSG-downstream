@@ -3,31 +3,33 @@
 # @Author  : Mminmint
 # @File    : simPredict.py
 # @Software: PyCharm
-import copy
-import random
-import time
 
+import copy
+import time
 import traci
-import os, sys
-import optparse
-from vehicle import Vehicle
+
 from toolFunction import startSUMO
-from collections import ChainMap
+from paramSetting import botInfoRef
 from typing import Dict
 
 
 '''
 向路网中添加车辆，构造初始状态
 '''
-def addSimVehs(allVehs,speedLimits):
-    traci.route.add("expressway", ["Input", "Output"])
-    traci.route.add("expressway1", ["Input.1", "Output"])
-    traci.route.add("expressway2", ["Input.2", "Output"])
-    traci.route.add("expressway3", ["Input.3", "Output"])
+def addSimVehs(cfgFileTag,allVehs,speedLimits):
+    if cfgFileTag == 1:
+        traci.route.add("M1-M4", ["M1", "M4"])
+        traci.route.add("M2-M4", ["M2", "M4"])
+        traci.route.add("M3-M4", ["M3", "M4"])
+        routeRef = {"1": "M1-M4", "2": "M2-M4", "3": "M3-M4"}
+        speedRef = {"1": 0, "2": 1, "3": 2}
+    else:
+        traci.route.add("M3-M5", ["M3", "M5"])
+        traci.route.add("M4-M5", ["M4", "M5"])
+        routeRef = {"3": "M3-M5", "4": "M4-M5"}
+        speedRef = {"3":0,"4":1}
 
     typeRef = {0: "HV", 1: "CV", 2: "CAV"}
-    routeRef = {"1":"expressway1","2":"expressway2","3":"expressway3","t":"expressway"}
-    speedRef = {"1":1,"2":2,"3":3,"t":0}
 
     for vehInfo in allVehs:
         routeID = routeRef[vehInfo[2][-3]]
@@ -44,21 +46,17 @@ def addSimVehs(allVehs,speedLimits):
 def banLCModel(suggestLC):
     for vehID,lane in suggestLC.items():
         if traci.vehicle.getLaneID(vehID) == lane:    # laneID:Input.1_1
-            if int(lane[-1]):                         # int(laneID[-1]):1
+            if not int(lane[-1]):                         # int(laneID[-1]):1
                 traci.vehicle.setLaneChangeMode(vehID, 256)
 
 '''
 为符合条件的HV与驶出控制区后的optVehs执行默认换道模型
 '''
-def staticLateMerge():
+def staticLateMerge(botPos):
     for vehID in traci.vehicle.getIDList():
         position = traci.vehicle.getLanePosition(vehID)
-        if "hv" in vehID:
-            if 1450 < position < 1550:
-                traci.vehicle.setLaneChangeMode(vehID, 0b010101000101)
-        else:
-            if (1750 < position < 1850) and traci.vehicle.getLaneIndex(vehID):
-                traci.vehicle.setLaneChangeMode(vehID, 0b011000001001)
+        if botPos-250 < position < botPos-150:
+            traci.vehicle.setLaneChangeMode(vehID, 0b010101000101)
 
 
 '''
@@ -98,43 +96,26 @@ def simSGExecute(suggestSG:Dict) -> None:
 '''
 所有车辆平均行驶速度
 '''
-def avgSpeed(allVehs,horizon,detectOut) -> float:
+def avgSpeed(allVehs,horizon,detectOut,endPos) -> float:
     allDist,count = 0,0
+    curVehs = traci.vehicle.getIDList()
+    posRef = {"2":425,"3":925,"4":1420,"5":1970}
 
     for vehInfo in allVehs:
         vehID = vehInfo[0]
         originPos = vehInfo[3]
 
-        # 若车辆还在路段内
-        if vehID in traci.vehicle.getIDList():
-            curLane = traci.vehicle.getLaneID(vehID)
-            dist = traci.vehicle.getLanePosition(vehID)
-
-            # 若车辆一开始在Input路段，后面驶入Output，position会突变
-            if "Output" in curLane and "Input" in vehInfo[2]:
-                dist += 2000
-            else:
-                if "Input" in curLane:
-                    tag = curLane[-3]
-                    if tag == "1":
-                        dist += 500
-                    elif tag == "2":
-                        dist += 1000
-                    elif tag == "3":
-                        dist += 1500
-            allDist += (dist-originPos)/horizon
+        if vehID in detectOut.keys():
+            dist = endPos
+            allDist += (dist - originPos) / (detectOut[vehID] + 1)
             count += 1
-
-        # 若车辆已经驶出路段
         else:
-            if vehID not in detectOut.keys():
-                continue
-            if "Output" in vehInfo[2]:
-                dist = 200
-            else:
-                dist = 2200
-            allDist += (dist - originPos)/(detectOut[vehID]+1)
-            count += 1
+            if vehID in curVehs:
+                curLane = traci.vehicle.getLaneID(vehID)
+                dist = traci.vehicle.getLanePosition(vehID)
+                dist += posRef[curLane[-3]]
+                allDist += (dist - originPos) / horizon
+                count += 1
 
     return allDist/count
 
@@ -144,18 +125,10 @@ def avgSpeed(allVehs,horizon,detectOut) -> float:
 suggestCvLC:{'cv.1':'Input.1_2','cv.16':'Input.2_2'}
 suggestCavLC:{'cav.1':'Input.1_2','cav.16':'Input.2_2'}
 '''
-def simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LCReactTimes,SGReactTimes,realTargetSpeeds):
+def simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LCReactTime,SGReactTime):
     result = 0
     detectOut = {}
-
-    if cfgFileTag == 1:
-        edgeList = ['M1', 'M2', 'M3']
-        cfgFile = "SubFile/SubTry1.sumocfg"
-        detectors = ["e0", "e1"]
-    else:
-        edgeList = ['M3', 'M4']
-        cfgFile = "SubFile/SubTry2.sumocfg"
-        detectors = ["e0", "e1", "e2"]
+    edgeList, cfgFile, detectors, botPos, endPos = botInfoRef(cfgFileTag)
 
     try:
         sumoCmd = startSUMO(False,cfgFile)
@@ -174,33 +147,33 @@ def simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LC
                         detectOut[vehId] = step
 
             if step == 0:
-                addSimVehs(allVehs,speedLimits)
-            # 到时间执行换道引导
+                # 初始化路网车辆
+                addSimVehs(cfgFileTag,allVehs,speedLimits)
             elif step == 1:
-                for i in range(4):
+                # 设置路段限速
+                for i in range(len(edgeList)):
                     traci.edge.setMaxSpeed(edgeList[i], speedLimits[i])
-
+                # 对CAV进行换道引导
                 if suggestLC:
                     suggestCvLC = simCavLCExecute(suggestLC)
-
-            if step == avgLCReactTime + 1:
-                if suggestLC:
+            # 对CV进行换道引导
+            if step == LCReactTime + 1:
+                if suggestCvLC:
                     simCvLCExecute(suggestCvLC)
             # 到时间执行速度引导
-            # todo: 灵敏度分析参数，要与Vehicle.setSGInfo中的SGRemainTime相同
-            if step == avgSGReactTime + 1:
+            if step == SGReactTime + 1:
                 if suggestSG:
                     simSGExecute(suggestSG)
             # 到时间判断若换道引导成功执行，禁用自身换道模型
-            if step == avgLCReactTime + 10:
+            if step == LCReactTime + 10:
                 if suggestLC:
                     banLCModel(suggestLC)
             # 为部分车辆实施静态晚合流
-            staticLateMerge()
+            staticLateMerge(botPos)
 
             step += 1
             if step == totalStep:
-                result = avgSpeed(allVehs,totalStep,detectOut)
+                result = avgSpeed(allVehs,totalStep,detectOut,endPos)
                 break
 
             time.sleep(0.03)  # 在此等待以防止问题

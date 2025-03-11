@@ -125,7 +125,7 @@ def callOpt(vehicles_:Vehicles,optimizer_:Optimizer,prevSpeedLimits:List):
 
 
 def run():
-    sumoCmd = toolFunction.startSUMO(True, "MainFile/MainFile.sumocfg")
+    sumoCmd = toolFunction.startSUMO(True, "MainFile/MAGIC.sumocfg")
     traci.start(sumoCmd, label="Main")  # 打开仿真建立连接
 
     step = 0
@@ -140,8 +140,10 @@ def run():
 
     vehicles1 = Vehicles(botPos1)
     vehicles2 = Vehicles(botPos2)
-    optimizer1 = Optimizer(originPopNum=20,popNum=6,iterTimes=10,sameBestTimes=3,crossParam=0.6,mutationParam=0.1,multiTag=0)
-    optimizer2 = Optimizer(originPopNum=20,popNum=6,iterTimes=10,sameBestTimes=3,crossParam=0.6,mutationParam=0.1,multiTag=1)
+    optimizer1 = Optimizer(cfgFileTag=1,originPopNum=20,popNum=6,iterTimes=10,
+                           sameBestTimes=3,crossParam=0.6,mutationParam=0.1)
+    optimizer2 = Optimizer(cfgFileTag=2,originPopNum=20,popNum=6,iterTimes=10,
+                           sameBestTimes=3,crossParam=0.6,mutationParam=0.1)
 
     start = time.time()
 
@@ -181,8 +183,11 @@ def run():
             vehicles1.initVehs(step,curVehs1)
             vehicles2.initVehs(step,curVehs2)
 
-            suggestLC1,suggestSG1 = callOpt(vehicles1,optimizer1,prevSpeedLimits)
-            suggestLC2, suggestSG2 = callOpt(vehicles2, optimizer2, prevSpeedLimits)
+            speedLimits1 = prevSpeedLimits[:3]
+            speedLimits2 = prevSpeedLimits[3:]
+
+            suggestLC1,suggestSG1 = callOpt(vehicles1,optimizer1,speedLimits1)
+            suggestLC2, suggestSG2 = callOpt(vehicles2, optimizer2, speedLimits2)
 
             # 主仿真执行之前发送的建议
             vehicles1.executeLCs()
@@ -192,13 +197,13 @@ def run():
 
             # 主仿真发送当前优化的建议（待执行）
             if suggestLC1:
-                vehicles1.initLCs(suggestLC1,avgReactTime=3,reactTimeBias=0.8)
+                vehicles1.initLCs(suggestLC1)
             if suggestSG1:
-                vehicles1.initSGs(suggestSG1, avgReactTime=3, reactTimeBias=0.8)
+                vehicles1.initSGs(suggestSG1)
             if suggestLC2:
-                vehicles2.initLCs(suggestLC2,avgReactTime=3,reactTimeBias=0.8)
+                vehicles2.initLCs(suggestLC2)
             if suggestSG2:
-                vehicles2.initSGs(suggestSG2, avgReactTime=3, reactTimeBias=0.8)
+                vehicles2.initSGs(suggestSG2)
 
             # 更新vehs到lastVehs
             vehicles1.deinit()

@@ -7,7 +7,8 @@ import copy
 import random
 import traci
 from vehicle import Vehicle
-from collections import defaultdict,deque
+from collections import defaultdict
+from paramSetting import genLCReactTimes,genSGReactTimes
 from typing import Tuple
 
 
@@ -102,7 +103,7 @@ class Vehicles:
                     readyLCRef[vehId] = veh.lane
                     LCCount += 1
 
-            if veh.SGFrequency(self.step):
+            if veh.SGFrequency(self.step) and veh.SGBound():
                 readySG.append(vehId)
                 readySGRef[vehId] = veh.speed
         SGCount = len(readySG)
@@ -114,19 +115,16 @@ class Vehicles:
     为当前时刻换道引导建议初始化车辆参数
     体现不确定参数：换道反应时间
     '''
-    # todo:不确定性参数分布待确定
-    def initLCs(self,suggestLC,avgReactTime,reactTimeBias):
-        # 反应时间均匀分布
-        downLimit = avgReactTime * reactTimeBias
-        upLimit = avgReactTime * (2 - reactTimeBias)
-        reactTime = round(random.uniform(downLimit, upLimit))
-
-        # print("suggestLC:",suggestLC)
-
+    def initLCs(self,suggestLC):
         for vehID,lane in suggestLC.items():
             veh = self.vehs[vehID]
-            veh.setLGInfo(self.step)
-            self.prepareLC[reactTime][vehID] = lane
+            veh.setLCInfo(self.step)
+            # 若引导车辆为CV
+            if veh.type == 1:
+                reactTime = genLCReactTimes(1)
+                self.prepareLC[reactTime][vehID] = lane
+            else:
+                self.prepareLC[0][vehID] = lane
 
 
     '''
@@ -147,18 +145,13 @@ class Vehicles:
     体现不确定参数：变速反应时间
     prepareSG[0] = {”cv.1”:targetSpeed}
     '''
-    # todo:不确定性参数分布待确定
-    def initSGs(self, suggestSG, avgReactTime, reactTimeBias):
+    def initSGs(self, suggestSG):
         for vehID, targetSpeed in suggestSG.items():
             veh = self.vehs[vehID]
             veh.setSGInfo(self.step)
-
             # 若引导车辆为CV
             if veh.type == 1:
-                # 反应时间均匀分布
-                downLimit = avgReactTime * reactTimeBias
-                upLimit = avgReactTime * (2 - reactTimeBias)
-                reactTime = round(random.uniform(downLimit, upLimit))
+                reactTime = genSGReactTimes(1)
                 self.prepareSG[reactTime][vehID] = targetSpeed
             # 若引导车辆为CAV
             else:

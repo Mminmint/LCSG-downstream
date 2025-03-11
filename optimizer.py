@@ -8,6 +8,7 @@ import random
 import numpy as np
 
 from copy import deepcopy
+from paramSetting import genLCReactTimes,genSGReactTimes,genTestSLCs,genTestSSGs
 from multiProcess import processExecute
 from toolFunction import nearestFive
 from operator import itemgetter
@@ -15,7 +16,8 @@ from typing import List,Dict
 
 
 class Optimizer:
-    def __init__(self,originPopNum,popNum,iterTimes,sameBestTimes,crossParam,mutationParam,multiTag):
+    def __init__(self,cfgFileTag,originPopNum,popNum,iterTimes,sameBestTimes,crossParam,mutationParam):
+        self.cfgFileTag = cfgFileTag
         self.originPopNum = originPopNum
         self.popNum = popNum
         self.iterTimes = iterTimes
@@ -24,7 +26,11 @@ class Optimizer:
         self.mutationParam = mutationParam
         self.bestLC = None
         self.bestSG = None
-        self.multiTag = multiTag
+
+        if cfgFileTag == 1:
+            self.multiTag = 0
+        else:
+            self.multiTag = 1
 
 
     '''初始化种群'''
@@ -140,7 +146,7 @@ class Optimizer:
     '''
     将便于变换的列表形式转换为真正需要换道的字典形式
     readySG: ["cv_0","cav_3","cv_1","cv_2","cav_2"]
-    pop["SG"]: [0,1.389,-1.389,0,0]
+    pop["SG"]: [0,27,22,0,0]
 
     suggestSG: {"cv.1": 30, "cv.3": 20}
     '''
@@ -175,12 +181,22 @@ class Optimizer:
                 suggestSG = self.transReadyToSuggestSG(pop[i])
                 suggestSGs.append(suggestSG)
 
+        LCReactTimes = genLCReactTimes(count)
+        SGReactTimes = genSGReactTimes(count)
+        testSLCs = genTestSLCs(suggestLCs)
+        testSSGs = genTestSSGs(suggestSGs,self.readySGRef)
+
         # 有需要预测的适应度时
-        results = processExecute(count,self.orgVehsInfo,suggestLCs,suggestSGs,self.speedLimits)
+        results = processExecute(processNum=count*3,cfgFileTag=self.cfgFileTag,vehs=self.orgVehsInfo,
+                                 suggestLCs=testSLCs,suggestSGs=testSSGs,speedLimits=self.speedLimits,
+                                 LCReactTimes=LCReactTimes,SGReactTimes=SGReactTimes)
 
         # 和pop中的序号对上，赋值fit
         for i in range(count):
-            pop[i]['fit'] = results[i]
+            startIdx = i * 3
+            endIdx = startIdx + 3
+            mean_fit = np.mean(results[startIdx:endIdx])
+            pop[i]['fit'] = mean_fit
 
         return pop
 

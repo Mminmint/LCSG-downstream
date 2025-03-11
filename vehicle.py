@@ -168,7 +168,7 @@ class Vehicle:
                     self.speed * self.speed - speedRF * speedRF) \
                      - speedRF * (t_ch + t_act + t_avg)
 
-        return 0 if constrain2 <0 else 1
+        return 0 if constrain2 < 0 else 1
 
 
     '''
@@ -201,7 +201,7 @@ class Vehicle:
     设置换道引导参数
     当车辆在优化后接到换道引导后，需要改变参数记录
     '''
-    def setLGInfo(self, step: int):
+    def setLCInfo(self, step: int):
         self.lastSLCTime = step
 
 
@@ -227,5 +227,15 @@ class Vehicle:
     '''
     def SGFrequency(self,step:int):
         if step - self.lastSSGTime <= 20:
-            return -1
+            return 0
+        return 1
+
+    '''
+    速度引导速度约束
+    大于20km/h的车辆才进行引导
+    Application: optVehs
+    '''
+    def SGBound(self):
+        if self.speed <= 5.556:
+            return 0
         return 1
