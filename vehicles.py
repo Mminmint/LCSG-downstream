@@ -46,7 +46,7 @@ class Vehicles:
             if not veh.type:
                 veh.staticLateMerge(self.botPos)
             else:
-                if "Input" in veh.lane:
+                if "M" in veh.lane:
                     self.addOptVeh(veh)
 
 

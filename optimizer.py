@@ -175,14 +175,14 @@ class Optimizer:
                 # 要进行readyLC和suggestLC的转换
                 suggestLC = self.transReadyToSuggestLC(pop[i],self.readyLCRef)
                 suggestLCs.append(suggestLC)
+            LCReactTimes = genLCReactTimes(count * 3)
         if SGTag:
             for i in range(count):
                 # 要进行readySG和suggestSG的转换
                 suggestSG = self.transReadyToSuggestSG(pop[i])
                 suggestSGs.append(suggestSG)
+            SGReactTimes = genSGReactTimes(count * 3)
 
-        LCReactTimes = genLCReactTimes(count)
-        SGReactTimes = genSGReactTimes(count)
         testSLCs = genTestSLCs(suggestLCs)
         testSSGs = genTestSSGs(suggestSGs,self.readySGRef)
 

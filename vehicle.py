@@ -48,9 +48,17 @@ class Vehicle:
             if tag == "2":
                 position += 425
             elif tag == "3":
-                position += 925
+                position += 670
             elif tag == "4":
+                position += 870
+            elif tag == "5":
+                position += 925
+            elif tag == "6":
                 position += 1420
+            elif tag == "7":
+                position += 1670
+            elif tag == "8":
+                position += 1870
         return position
 
 

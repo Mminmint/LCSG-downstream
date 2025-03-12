@@ -20,38 +20,34 @@
     <e1Detector id="5_0" lane="M2_0" pos="125.00" freq="60.00" file="../output/det_output.xml"/>
     <e1Detector id="6_1" lane="M2_1" pos="225.00" freq="60.00" file="../output/det_output.xml"/>
     <e1Detector id="6_0" lane="M2_0" pos="225.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="7_1" lane="M2_1" pos="325.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="7_0" lane="M2_0" pos="325.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="8_1" lane="M2_1" pos="425.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="8_0" lane="M2_0" pos="425.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="9_1" lane="M3_1" pos="25.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="9_0" lane="M3_0" pos="25.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="10_1" lane="M3_1" pos="125.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="10_0" lane="M3_0" pos="125.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="11_1" lane="M3_1" pos="225.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="11_0" lane="M3_0" pos="225.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="12_1" lane="M3_1" pos="325.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="12_0" lane="M3_0" pos="325.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="13_1" lane="M3_1" pos="425.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="13_0" lane="M3_0" pos="425.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="14_2" lane="M4_2" pos="30.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="14_1" lane="M4_1" pos="30.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="14_0" lane="M4_0" pos="30.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="15_2" lane="M4_2" pos="130.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="15_1" lane="M4_1" pos="130.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="15_0" lane="M4_0" pos="130.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="16_2" lane="M4_2" pos="230.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="16_1" lane="M4_1" pos="230.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="16_0" lane="M4_0" pos="230.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="17_2" lane="M4_2" pos="330.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="17_1" lane="M4_1" pos="330.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="17_0" lane="M4_0" pos="330.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="18_2" lane="M4_2" pos="430.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="18_1" lane="M4_1" pos="430.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="18_0" lane="M4_0" pos="430.00" freq="60.00" file="../output/det_output.xml"/>
-    <e1Detector id="19_2" lane="M4_2" pos="530.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
-    <e1Detector id="19_1" lane="M4_1" pos="530.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
-    <e1Detector id="19_0" lane="M4_0" pos="530.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
-    <e1Detector id="20_1" lane="M5_1" pos="80.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
-    <e1Detector id="20_0" lane="M5_0" pos="80.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
+    <e1Detector id="7_0" lane="M3_0" pos="80.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="8_0" lane="M3_0" pos="180.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="9_1" lane="M5_1" pos="25.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="9_0" lane="M5_0" pos="25.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="10_1" lane="M5_1" pos="125.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="10_0" lane="M5_0" pos="125.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="11_1" lane="M5_1" pos="225.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="11_0" lane="M5_0" pos="225.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="12_1" lane="M5_1" pos="325.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="12_0" lane="M5_0" pos="325.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="13_1" lane="M5_1" pos="425.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="13_0" lane="M5_0" pos="425.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="14_2" lane="M6_2" pos="30.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="14_1" lane="M6_1" pos="30.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="14_0" lane="M6_0" pos="30.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="15_2" lane="M6_2" pos="130.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="15_1" lane="M6_1" pos="130.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="15_0" lane="M6_0" pos="130.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="16_2" lane="M6_2" pos="230.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="16_1" lane="M6_1" pos="230.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="16_0" lane="M6_0" pos="230.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="17_1" lane="M7_1" pos="80.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="17_0" lane="M7_0" pos="80.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="18_1" lane="M7_1" pos="180.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="18_0" lane="M7_0" pos="180.00" freq="60.00" file="../output/det_output.xml"/>
+    <e1Detector id="19_2" lane="M8_2" pos="80.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
+    <e1Detector id="19_1" lane="M8_1" pos="80.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
+    <e1Detector id="19_0" lane="M8_0" pos="80.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
+    <e1Detector id="20_1" lane="M9_1" pos="80.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
+    <e1Detector id="20_0" lane="M9_0" pos="80.00" freq="60.00" file="../output/det_output.xml" friendlyPos="1"/>
 </additional>

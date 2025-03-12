@@ -41,7 +41,7 @@ def lineBound(readyLCDict):
     return LCBound, readyLC
 
 
-def setVSL(avgDensity, edge, prevSpeed, prevSpeedLimit):
+def setVSL(avgDensity, edges, prevSpeed, prevSpeedLimit):
     jamDensity = 100  # 最大密度 (veh/km)
     rhoCrit = jamDensity * 0.25  # 临界密度取最大密度的40%（可调整）
     vFree = 80.0  # 自由流速度 (km/h)
@@ -67,8 +67,9 @@ def setVSL(avgDensity, edge, prevSpeed, prevSpeedLimit):
     prevSpeedLimitKmh = prevSpeedLimit * 3.6  # 转换为km/h
     speedLimit = max(prevSpeedLimitKmh - 10, min(speedLimit, prevSpeedLimitKmh + 10))
 
-    # 设置限速（转换为m/s）
-    traci.edge.setMaxSpeed(edge, speedLimit / 3.6)
+    for edge in edges:
+        # 设置限速（转换为m/s）
+        traci.edge.setMaxSpeed(edge, speedLimit / 3.6)
 
     return speedLimit / 3.6, newSpeed
 
@@ -129,9 +130,9 @@ def run():
     traci.start(sumoCmd, label="Main")  # 打开仿真建立连接
 
     step = 0
-    edgeList = ['M1', 'M2', 'M3', 'M4']
-    edgeRatio = [425*2,500*2,495*2,550*3]
-    botPos1,botPos2 = 0,0       # todo:瓶颈点位置
+    edgeList = [('M1',), ('M2','M3','M4'), ('M5',), ('M6','M7','M8')]
+    edgeRatio = [425*2,245*2+200+55*2,495*2,250*3+200*2+100*3]
+    botPos1,botPos2 = 670,1670       # todo:瓶颈点位置
 
     count = [0, 0, 0, 0]
     prevSpeeds = [80.0] * 4  # 初始化各路段速度（km/h）
@@ -154,13 +155,14 @@ def run():
         if (step >= 240 and step < 300) or (step >= 540 and step < 600) \
                 or (step >= 840 and step < 900) or (step >= 1140 and step < 1200):
             for i in range(len(edgeList)):
-                count[i] += traci.edge.getLastStepVehicleNumber(edgeList[i])
+                edges = edgeList[i]
+                for edge in edges:
+                    count[i] += traci.edge.getLastStepVehicleNumber(edge)
 
         if step == 300 or step == 600 or step == 900 or step == 1200:
             for i in range(len(edgeList)):
                 # 计算平均密度
                 avgDensity = (count[i] * 1000) / (60 * edgeRatio[i])
-
                 # 调用METANET模型更新限速
                 speedLimit, newSpeed = setVSL(avgDensity, edgeList[i], prevSpeeds[i], prevSpeedLimits[i])
 
@@ -175,9 +177,14 @@ def run():
         if step >= 600:
             curVehs1 = traci.edge.getLastStepVehicleIDs('M1') \
                        + traci.edge.getLastStepVehicleIDs('M2') \
-                       + traci.edge.getLastStepVehicleIDs('M3')
-            curVehs2 = traci.edge.getLastStepVehicleIDs('M3') \
-                       + traci.edge.getLastStepVehicleIDs('M4')
+                       + traci.edge.getLastStepVehicleIDs('M3')\
+                       + traci.edge.getLastStepVehicleIDs('M4')\
+                       + traci.edge.getLastStepVehicleIDs('M5')
+            curVehs2 = traci.edge.getLastStepVehicleIDs('M5') \
+                       + traci.edge.getLastStepVehicleIDs('M6')\
+                       + traci.edge.getLastStepVehicleIDs('M7')\
+                       + traci.edge.getLastStepVehicleIDs('M8')\
+                       + traci.edge.getLastStepVehicleIDs('I1')
 
             # 初始化/更新vehs中的车辆信息，更新optVehs
             vehicles1.initVehs(step,curVehs1)

@@ -18,16 +18,20 @@ from typing import Dict
 '''
 def addSimVehs(cfgFileTag,allVehs,speedLimits):
     if cfgFileTag == 1:
-        traci.route.add("M1-M4", ["M1", "M4"])
-        traci.route.add("M2-M4", ["M2", "M4"])
-        traci.route.add("M3-M4", ["M3", "M4"])
-        routeRef = {"1": "M1-M4", "2": "M2-M4", "3": "M3-M4"}
-        speedRef = {"1": 0, "2": 1, "3": 2}
+        traci.route.add("M1-M6", ["M1", "M6"])
+        traci.route.add("M2-M6", ["M2", "M6"])
+        traci.route.add("M3-M6", ["M3", "M6"])
+        traci.route.add("M4-M6", ["M4", "M6"])
+        traci.route.add("M5-M6", ["M5", "M6"])
+        routeRef = {"1": "M1-M6", "2": "M2-M6", "3": "M3-M6", "4": "M4-M6", "5": "M5-M6"}
+        speedRef = {"1": 0, "2": 1, "3": 1, "4": 1, "5": 2}
     else:
-        traci.route.add("M3-M5", ["M3", "M5"])
-        traci.route.add("M4-M5", ["M4", "M5"])
-        routeRef = {"3": "M3-M5", "4": "M4-M5"}
-        speedRef = {"3":0,"4":1}
+        traci.route.add("M5-M9", ["M5", "M9"])
+        traci.route.add("M6-M9", ["M6", "M9"])
+        traci.route.add("M7-M9", ["M7", "M9"])
+        traci.route.add("M8-M9", ["M8", "M9"])
+        routeRef = {"5": "M5-M9", "6": "M6-M9", "7": "M7-M9", "8": "M8-M9"}
+        speedRef = {"5":2,"6":3,"7":3,"8":3}
 
     typeRef = {0: "HV", 1: "CV", 2: "CAV"}
 
@@ -152,7 +156,8 @@ def simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LC
             elif step == 1:
                 # 设置路段限速
                 for i in range(len(edgeList)):
-                    traci.edge.setMaxSpeed(edgeList[i], speedLimits[i])
+                    for edge in edgeList[i]:
+                        traci.edge.setMaxSpeed(edge, speedLimits[i])
                 # 对CAV进行换道引导
                 if suggestLC:
                     suggestCvLC = simCavLCExecute(suggestLC)

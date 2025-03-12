@@ -4,23 +4,23 @@
     <vType id="CV" accel="2" decel="4.5" sigma="0.5" length="5" maxSpeed="20" carFollowModel="IDM" actionStepLenth="1" lcStrategic="0.5" lcKeepRight="0" lcCooperative="1" lcSpeedGain="0.5"/>
     <vType id="CAV" accel="2" decel="4.5" sigma="0.5" length="5" maxSpeed="20" minGap="2" carFollowModel="Krauss" actionStepLenth="1" lcStrategic="0.5" lcKeepRight="0" lcCooperative="1" lcSpeedGain="0.5"/>
 
-    <flow id="hv_M1_M5" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="281" type="HV" from="M1" to="M5"/>
-    <flow id="cv_M1_M5" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="140" type="CV" from="M1" to="M5"/>
-    <flow id="cav_M1_M5" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="281" type="CAV" from="M1" to="M5"/>
+    <flow id="hv_M1_M7" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="720" type="HV" from="M1" to="M7"/>
+    <flow id="cv_M1_M7" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="240" type="CV" from="M1" to="M7"/>
+    <flow id="cav_M1_M7" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="240" type="CAV" from="M1" to="M7"/>
 
-    <flow id="hv_M1_O1" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="336" type="HV" from="M1" to="O1"/>
-    <flow id="cv_M1_O1" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="168" type="CV" from="M1" to="O1"/>
-    <flow id="cav_M1_O1" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="336" type="CAV" from="M1" to="O1"/>
+    <flow id="hv_M1_O1" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="60" type="HV" from="M1" to="O1"/>
+    <flow id="cv_M1_O1" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="20" type="CV" from="M1" to="O1"/>
+    <flow id="cav_M1_O1" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="20" type="CAV" from="M1" to="O1"/>
 
-    <flow id="hv_M1_O2" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="70" type="HV" from="M1" to="O2"/>
-    <flow id="cv_M1_O2" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="35" type="CV" from="M1" to="O2"/>
-    <flow id="cav_M1_O2" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="70" type="CAV" from="M1" to="O2"/>
+    <flow id="hv_M1_O2" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="120" type="HV" from="M1" to="O2"/>
+    <flow id="cv_M1_O2" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="40" type="CV" from="M1" to="O2"/>
+    <flow id="cav_M1_O2" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="40" type="CAV" from="M1" to="O2"/>
 
-    <flow id="hv_I1_M5" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="166" type="HV" from="I1" to="M5"/>
-    <flow id="cv_I1_M5" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="83" type="CV" from="I1" to="M5"/>
-    <flow id="cav_I1_M5" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="166" type="CAV" from="I1" to="M5"/>
+    <flow id="hv_I1_M7" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="300" type="HV" from="I1" to="M7"/>
+    <flow id="cv_I1_M7" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="100" type="CV" from="I1" to="M7"/>
+    <flow id="cav_I1_M7" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="100" type="CAV" from="I1" to="M7"/>
 
-    <flow id="hv_I1_O2" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="41" type="HV" from="I1" to="O2"/>
+    <flow id="hv_I1_O2" color="1,0,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="60" type="HV" from="I1" to="O2"/>
     <flow id="cv_I1_O2" color="0,1,0" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="20" type="CV" from="I1" to="O2"/>
-    <flow id="cav_I1_O2" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="41" type="CAV" from="I1" to="O2"/>
+    <flow id="cav_I1_O2" color="0,0,1" departLane="random" departSpeed="desired" begin="0" end="1800" vehsPerHour="20" type="CAV" from="I1" to="O2"/>
 </routes>
