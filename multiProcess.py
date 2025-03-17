@@ -12,7 +12,7 @@ import multiprocessing
 
 
 # 多进程
-def multiProcess(processNum,cfgFileTag,vehs,suggestLCs,suggestSGs,speedLimits,LCReactTimes,SGReactTimes):
+def multiProcess(processNum,cfgFileTag,vehs,suggestLCs,suggestSGs,speedLimits):
     processes = []
     queue = multiprocessing.Queue()  # 创建一个队列用于收集结果
 
@@ -20,9 +20,9 @@ def multiProcess(processNum,cfgFileTag,vehs,suggestLCs,suggestSGs,speedLimits,LC
     for i in range(processNum):
         suggestLC = suggestLCs[i] if suggestLCs else []
         suggestSG = suggestSGs[i] if suggestSGs else []
-        # simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LCReactTime,SGReactTime)
+        # simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits)
         p = multiprocessing.Process(target=simExecute, args=(cfgFileTag, vehs, suggestLC,suggestSG,i,queue,
-                                                             speedLimits,LCReactTimes[i],SGReactTimes[i]))
+                                                             speedLimits))
         processes.append(p)
         p.start()
         # print(time.time())
@@ -36,6 +36,6 @@ def multiProcess(processNum,cfgFileTag,vehs,suggestLCs,suggestSGs,speedLimits,LC
     return results
 
 
-def processExecute(processNum,cfgFileTag,vehs,suggestLCs,suggestSGs,speedLimits,LCReactTimes,SGReactTimes):
-    results = multiProcess(processNum,cfgFileTag,vehs,suggestLCs,suggestSGs,speedLimits,LCReactTimes,SGReactTimes)
+def processExecute(processNum,cfgFileTag,vehs,suggestLCs,suggestSGs,speedLimits):
+    results = multiProcess(processNum,cfgFileTag,vehs,suggestLCs,suggestSGs,speedLimits)
     return results

@@ -1,4 +1,3 @@
 <additional>
    <laneAreaDetector id="e0" lane="M3_0" pos="190" endPos="200" freq="1500" file="NUL" friendlyPos="true"/>
-   <laneAreaDetector id="e1" lane="M3_1" pos="190" endPos="200" freq="1500" file="NUL" friendlyPos="true"/>
 </additional>

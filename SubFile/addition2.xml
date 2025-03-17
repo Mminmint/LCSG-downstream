@@ -1,5 +1,4 @@
 <additional>
-   <laneAreaDetector id="e0" lane="M4_0" pos="190" endPos="200" freq="1500" file="NUL" friendlyPos="true"/>
-   <laneAreaDetector id="e1" lane="M4_0" pos="190" endPos="200" freq="1500" file="NUL" friendlyPos="true"/>
-   <laneAreaDetector id="e2" lane="M4_1" pos="190" endPos="200" freq="1500" file="NUL" friendlyPos="true"/>
+   <laneAreaDetector id="e0" lane="M7_0" pos="190" endPos="200" freq="1500" file="NUL" friendlyPos="true"/>
+   <laneAreaDetector id="e1" lane="M7_1" pos="190" endPos="200" freq="1500" file="NUL" friendlyPos="true"/>
 </additional>

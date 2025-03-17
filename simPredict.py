@@ -9,7 +9,7 @@ import time
 import traci
 
 from toolFunction import startSUMO
-from paramSetting import botInfoRef
+from paramSetting import botInfoRef,genLCReactTimes,genSGReactTimes
 from typing import Dict
 
 
@@ -23,6 +23,7 @@ def addSimVehs(cfgFileTag,allVehs,speedLimits):
         traci.route.add("M3-M6", ["M3", "M6"])
         traci.route.add("M4-M6", ["M4", "M6"])
         traci.route.add("M5-M6", ["M5", "M6"])
+        traci.route.add("M1-O1", ["M1", "O1"])
         routeRef = {"1": "M1-M6", "2": "M2-M6", "3": "M3-M6", "4": "M4-M6", "5": "M5-M6"}
         speedRef = {"1": 0, "2": 1, "3": 1, "4": 1, "5": 2}
     else:
@@ -30,37 +31,24 @@ def addSimVehs(cfgFileTag,allVehs,speedLimits):
         traci.route.add("M6-M9", ["M6", "M9"])
         traci.route.add("M7-M9", ["M7", "M9"])
         traci.route.add("M8-M9", ["M8", "M9"])
-        routeRef = {"5": "M5-M9", "6": "M6-M9", "7": "M7-M9", "8": "M8-M9"}
+        traci.route.add("I1-M9", ["I1", "M9"])
+        routeRef = {"5": "M5-M9", "6": "M6-M9", "7": "M7-M9", "8": "M8-M9", "1": "I1-M9"}
         speedRef = {"5":2,"6":3,"7":3,"8":3}
 
     typeRef = {0: "HV", 1: "CV", 2: "CAV"}
 
     for vehInfo in allVehs:
-        routeID = routeRef[vehInfo[2][-3]]
-        departSpeed = min(vehInfo[4],speedLimits[speedRef[vehInfo[2][-3]]])
-        traci.vehicle.add(vehID=vehInfo[0], routeID=routeID, typeID=typeRef[vehInfo[1]], depart='now',departLane=int(vehInfo[2][-1]), departPos=vehInfo[-1],departSpeed=departSpeed)
+        if vehInfo[-1]:
+            routeID = "M1-O1"
+        else:
+            routeID = routeRef[vehInfo[2][-3]]
+        if 'M' in vehInfo[2]:
+            departSpeed = min(vehInfo[4],speedLimits[speedRef[vehInfo[2][-3]]])
+        else:
+            departSpeed = vehInfo[4]
+        traci.vehicle.add(vehID=vehInfo[0], routeID=routeID, typeID=typeRef[vehInfo[1]], depart='now',departLane=int(vehInfo[2][-1]), departPos=vehInfo[-2],departSpeed=departSpeed)
         if vehInfo[5] is not None:
             traci.vehicle.setLaneChangeMode(vehInfo[0], vehInfo[5])
-
-
-'''
-若车辆被建议换道成功，认为其接下来不会继续换道
-禁用其换道模型
-'''
-def banLCModel(suggestLC):
-    for vehID,lane in suggestLC.items():
-        if traci.vehicle.getLaneID(vehID) == lane:    # laneID:Input.1_1
-            if not int(lane[-1]):                         # int(laneID[-1]):1
-                traci.vehicle.setLaneChangeMode(vehID, 256)
-
-'''
-为符合条件的HV与驶出控制区后的optVehs执行默认换道模型
-'''
-def staticLateMerge(botPos):
-    for vehID in traci.vehicle.getIDList():
-        position = traci.vehicle.getLanePosition(vehID)
-        if botPos-250 < position < botPos-150:
-            traci.vehicle.setLaneChangeMode(vehID, 0b010101000101)
 
 
 '''
@@ -78,13 +66,50 @@ def simCavLCExecute(suggestLC:Dict) -> Dict:
     return suggestLCCopy
 
 
+def gainLCTimes(suggestLC):
+    LCreactTimes = genLCReactTimes(len(suggestLC))
+    vehs = list(suggestLC.keys())
+    vehLCTimes = list(zip(vehs, LCreactTimes))
+
+    maxTime = max(LCreactTimes)  # 找到最大换道时间
+    prepareLC = [[] for _ in range(maxTime + 1)]  # 初始化嵌套列表
+
+    # 将车辆ID分配到对应的时间槽
+    for veh, LCTime in vehLCTimes:
+        prepareLC[LCTime].append(veh)
+
+    return prepareLC
+
+
 '''
-CV执行换道建议
-suggestLC: {"cv.1":"Input.2_0","cv.3":"Input.2_0"}
+CAV执行变速建议，要筛选出剩下的CV
+suggestSG: {"cv.1":30,"cv.3":20...}
 '''
-def simCvLCExecute(suggestLC:Dict) -> None:
-    for vehID,lane in suggestLC.items():
-        traci.vehicle.changeLane(vehID,int(lane[-1]),3)
+def simCavSGExecute(suggestSG:Dict) -> Dict:
+    suggestSGCopy = copy.deepcopy(suggestSG)
+
+    for vehID,targetSpeed in suggestSG.items():
+        if "cav" in vehID:
+            targetSpeed = max(0, targetSpeed)
+            traci.vehicle.slowDown(vehID, targetSpeed, 5)
+            del suggestSGCopy[vehID]
+
+    return suggestSGCopy
+
+
+def gainSGTimes(suggestSG):
+    SGreactTimes = genSGReactTimes(len(suggestSG))
+    vehs = list(suggestSG.keys())
+    vehSGTimes = list(zip(vehs, SGreactTimes))
+
+    maxTime = max(SGreactTimes)  # 找到最大换道时间
+    prepareSG = [[] for _ in range(maxTime + 1)]  # 初始化嵌套列表
+
+    # 将车辆ID分配到对应的时间槽
+    for veh, SGTime in vehSGTimes:
+        prepareSG[SGTime].append(veh)
+
+    return prepareSG
 
 
 '''
@@ -103,11 +128,16 @@ def simSGExecute(suggestSG:Dict) -> None:
 def avgSpeed(allVehs,horizon,detectOut,endPos) -> float:
     allDist,count = 0,0
     curVehs = traci.vehicle.getIDList()
-    posRef = {"2":425,"3":925,"4":1420,"5":1970}
+    # 这里的1只可能是O1
+    posRef = {"1":425,"2":425,"3":670,"4":870,"5":925,
+              "6":1420,"7":1670,"8":1870,"9":1970}
 
     for vehInfo in allVehs:
         vehID = vehInfo[0]
         originPos = vehInfo[3]
+
+        if 'I' in vehInfo[2]:
+            originPos = 1320
 
         if vehID in detectOut.keys():
             dist = endPos
@@ -117,7 +147,10 @@ def avgSpeed(allVehs,horizon,detectOut,endPos) -> float:
             if vehID in curVehs:
                 curLane = traci.vehicle.getLaneID(vehID)
                 dist = traci.vehicle.getLanePosition(vehID)
-                dist += posRef[curLane[-3]]
+                if 'I' in curLane:
+                    dist += 1320
+                else:
+                    dist += posRef[curLane[-3]]
                 allDist += (dist - originPos) / horizon
                 count += 1
 
@@ -129,10 +162,11 @@ def avgSpeed(allVehs,horizon,detectOut,endPos) -> float:
 suggestCvLC:{'cv.1':'Input.1_2','cv.16':'Input.2_2'}
 suggestCavLC:{'cav.1':'Input.1_2','cav.16':'Input.2_2'}
 '''
-def simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LCReactTime,SGReactTime):
+def simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits):
     result = 0
     detectOut = {}
     edgeList, cfgFile, detectors, botPos, endPos = botInfoRef(cfgFileTag)
+    prepareCvLC, prepareCvSG = [],[]
 
     try:
         sumoCmd = startSUMO(False,cfgFile)
@@ -161,20 +195,34 @@ def simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LC
                 # 对CAV进行换道引导
                 if suggestLC:
                     suggestCvLC = simCavLCExecute(suggestLC)
-            # 对CV进行换道引导
-            if step == LCReactTime + 1:
-                if suggestCvLC:
-                    simCvLCExecute(suggestCvLC)
-            # 到时间执行速度引导
-            if step == SGReactTime + 1:
+                    if suggestCvLC:
+                        prepareCvLC = gainLCTimes(suggestCvLC)
+                        if prepareCvLC[0]:
+                            for vehId in prepareCvLC[0]:
+                                traci.vehicle.changeLane(vehId, int(suggestCvLC[vehId][-1]), 3)
+                        prepareCvLC.pop(0)
+
                 if suggestSG:
-                    simSGExecute(suggestSG)
-            # 到时间判断若换道引导成功执行，禁用自身换道模型
-            if step == LCReactTime + 10:
-                if suggestLC:
-                    banLCModel(suggestLC)
-            # 为部分车辆实施静态晚合流
-            staticLateMerge(botPos)
+                    suggestCvSG = simCavSGExecute(suggestSG)
+                    if suggestCvSG:
+                        prepareCvSG = gainSGTimes(suggestCvSG)
+                        if prepareCvSG[0]:
+                            for vehId in prepareCvSG[0]:
+                                targetSpeed = max(0, suggestCvSG[vehId])
+                                traci.vehicle.slowDown(vehId, targetSpeed, 5)
+                        prepareCvSG.pop(0)
+            else:
+                if prepareCvLC:
+                    if prepareCvLC[0]:
+                        for vehId in prepareCvLC[0]:
+                            traci.vehicle.changeLane(vehId, int(suggestCvLC[vehId][-1]), 3)
+                    prepareCvLC.pop(0)
+                if prepareCvSG:
+                    if prepareCvSG[0]:
+                        for vehId in prepareCvSG[0]:
+                            targetSpeed = max(0, suggestCvSG[vehId])
+                            traci.vehicle.slowDown(vehId, targetSpeed, 5)
+                    prepareCvSG.pop(0)
 
             step += 1
             if step == totalStep:
@@ -184,6 +232,7 @@ def simExecute(cfgFileTag,allVehs,suggestLC,suggestSG,simID,queue,speedLimits,LC
             time.sleep(0.03)  # 在此等待以防止问题
 
     except Exception as e:
+        print(step,suggestLC,suggestSG,prepareCvLC,prepareCvSG)
         print(f"Error: {e}")
 
     finally:

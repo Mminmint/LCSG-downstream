@@ -15,7 +15,7 @@ class Vehicle:
         self.vehId = vehId          # str: "cv_1"
         self.laneIndex = None            # int: 0
         self.LCModel = None
-        self.lastSSGTime = -1
+        self.lastSSGTime = -30
 
 
     '''
@@ -99,16 +99,6 @@ class Vehicle:
 
 
     '''
-    为符合条件的HV执行静态晚合流控制
-    Application: HVs
-    '''
-    def staticLateMerge(self,botPos):
-        if botPos-250 < self.position < botPos-150:
-            traci.vehicle.setLaneChangeMode(self.vehId, 0b010101000101)
-            self.LCModel = 0b010101000101
-
-
-    '''
     判断车辆向左换道的安全可行性
     获取左侧车道前后车信息判断间隙
     Application: optVehs
@@ -127,17 +117,16 @@ class Vehicle:
 
         t_ch = 3        # 变道时间
         t_act = 1       # 车辆感知到前车减速的反应时间
-        t_avg = 3       # todo:敏感度参数
         a_min = 4.5    # 最大减速度（绝对值
 
         # 如果不满足约束，则返0
-        constrain1 = distLL + speedLL*(t_ch+t_avg) + (1/(2*a_min))*(speedLL*speedLL-self.speed*self.speed)\
-                     - self.speed*(t_ch+t_act+t_avg)
+        constrain1 = distLL + speedLL*(t_ch) + (1/(2*a_min))*(speedLL*speedLL-self.speed*self.speed)\
+                     - self.speed*(t_ch+t_act)
         if constrain1 < 0:
             return 0
 
-        constrain2 = distLF + self.speed*(t_ch+t_avg) + (1/(2*a_min))*(self.speed*self.speed-speedLF*speedLF) \
-                     - speedLF*(t_ch+t_act+t_avg)
+        constrain2 = distLF + self.speed*(t_ch) + (1/(2*a_min))*(self.speed*self.speed-speedLF*speedLF) \
+                     - speedLF*(t_ch+t_act)
 
         return 0 if constrain2 < 0 else 1
 
@@ -160,21 +149,20 @@ class Vehicle:
 
         t_ch = 3        # 变道时间
         t_act = 1       # 车辆感知到前车减速的反应时间
-        t_avg = 3       # todo:敏感度参数
         a_min = -4.5    # 最大减速度
 
         speedRF = self.vehRF.speed if self.vehRF else 0     # 获取目标车道后车信息
         speedRL = self.vehRL.speed if self.vehRL else 25    # 获取目标车道前车信息
 
         # 如果不满足约束，则返回0
-        constrain1 = distRL + speedRL * (t_ch+t_avg) + (1 / (2 * a_min)) * (speedRL * speedRL - self.speed * self.speed) \
-                     - self.speed * (t_ch + t_act + t_avg)
+        constrain1 = distRL + speedRL * (t_ch) + (1 / (2 * a_min)) * (speedRL * speedRL - self.speed * self.speed) \
+                     - self.speed * (t_ch + t_act)
         if constrain1 < 0:
             return 0
 
-        constrain2 = distRF + self.speed * (t_ch + t_avg) + (1 / (2 * a_min)) * (
+        constrain2 = distRF + self.speed * (t_ch) + (1 / (2 * a_min)) * (
                     self.speed * self.speed - speedRF * speedRF) \
-                     - speedRF * (t_ch + t_act + t_avg)
+                     - speedRF * (t_ch + t_act)
 
         return 0 if constrain2 < 0 else 1
 
@@ -190,11 +178,6 @@ class Vehicle:
             return 0
         # 距离上一次收到换道建议的时间
         if step - self.lastSLCTime <= 20:
-            return 0
-        # 总换道次数过多且在开放车道，禁用换道模型
-        if self.totalLCTimes >= 5 and self.laneIndex:
-            traci.vehicle.setLaneChangeMode(self.vehId, 256)
-            self.LCModel = 256
             return 0
         # 总换道次数过多且不在开放车道，采用CV自身換道模型
         if self.totalLCTimes >= 5 and not self.laneIndex:

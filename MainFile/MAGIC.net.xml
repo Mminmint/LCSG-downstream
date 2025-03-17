@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2025-03-12 20:07:46 by Eclipse SUMO netedit Version 1.13.0
+<!-- generated on 2025-03-17 15:14:49 by Eclipse SUMO netedit Version 1.13.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -85,8 +85,8 @@
         <lane id=":J9_0_2" index="2" disallow="all" speed="22.22" length="0.10" shape="1765.00,58.40 1765.00,58.40"/>
     </edge>
 
-    <edge id="I1" from="J12" to="J2" priority="-1">
-        <lane id="I1_0" index="0" speed="11.11" length="63.60" shape="1231.28,33.26 1292.20,51.50"/>
+    <edge id="I1" from="J12" to="J2" priority="-1" length="100.00">
+        <lane id="I1_0" index="0" speed="11.11" length="100.00" shape="1231.28,33.26 1292.20,51.50"/>
     </edge>
     <edge id="M1" from="J0" to="J1" priority="-1" length="425.00">
         <lane id="M1_0" index="0" speed="22.22" length="425.00" shape="0.88,-4.72 324.23,55.91"/>

@@ -2,14 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2ac66eb6-9550-477b-ac31-f757f5fed4f3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Output/det_output.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainFile/MAGIC.net.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MainFile/MAGIC.net.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainFile/MAGIC.rou.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MainFile/MAGIC.rou.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainFile/e1.addition.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MainFile/e1.addition.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SubFile/SubTry.rou.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/SubTry.rou.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SubFile/SubTry1.net.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/SubTry1.net.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SubFile/SubTry2.net.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/SubTry2.net.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SubFile/addition1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/addition1.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SubFile/addition2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/addition2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiProcess.py" beforeDir="false" afterPath="$PROJECT_DIR$/multiProcess.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/optimizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/paramSetting.py" beforeDir="false" afterPath="$PROJECT_DIR$/paramSetting.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/simPredict.py" beforeDir="false" afterPath="$PROJECT_DIR$/simPredict.py" afterDir="false" />
@@ -59,7 +61,7 @@
       <recent name="D:\OneDrive - tongji.edu.cn\桌面\搞新的\Code\Chapter5\LCSG-downstream\Optimizer" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="LCSG-magicData" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -82,9 +84,32 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="LCSG-magicData" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -105,6 +130,12 @@
       <workItem from="1741583378509" duration="9258000" />
       <workItem from="1741666939703" duration="15500000" />
       <workItem from="1741763106485" duration="8357000" />
+      <workItem from="1741786676428" duration="305000" />
+      <workItem from="1741847723869" duration="1402000" />
+      <workItem from="1741854349209" duration="7649000" />
+      <workItem from="1742032606554" duration="1710000" />
+      <workItem from="1742117510765" duration="1249000" />
+      <workItem from="1742191128693" duration="13087000" />
     </task>
     <servers />
   </component>
@@ -126,14 +157,15 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/optimizer.py</url>
-          <line>189</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>190</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/LCSG_downstream$main.coverage" NAME="main Coverage Results" MODIFIED="1741784048366" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/LCSG_downstream$test.coverage" NAME="test Coverage Results" MODIFIED="1742117519236" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/LCSG_downstream$main.coverage" NAME="main Coverage Results" MODIFIED="1742209344230" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -11,17 +11,17 @@ from scipy.stats import gamma
 
 def botInfoRef(cfgFileTag):
     if cfgFileTag == 1:
-        edgeList = [('M1'), ('M2','M3','M4'),('M5'),('M6')]
+        edgeList = [('M1',), ('M2','M3','M4'),('M5',),('M6',)]
         cfgFile = "SubFile/SubTry1.sumocfg"
-        detectors = ["e0", "e1"]
-        botPos = 200
-        endPos = 1000
+        detectors = ["e0"]
+        botPos = 670
+        endPos = 870
     else:
-        edgeList = [('M5'),('M6','M7','M8')]
+        edgeList = [('M5',),('M6','M7','M8')]
         cfgFile = "SubFile/SubTry2.sumocfg"
-        detectors = ["e0", "e1", "e2"]
-        botPos = 1500
-        endPos = 20000
+        detectors = ["e0", "e1",]
+        botPos = 1670
+        endPos = 1870
     return edgeList,cfgFile,detectors,botPos,endPos
 
 

@@ -92,7 +92,7 @@ def callOpt(vehicles_:Vehicles,optimizer_:Optimizer,prevSpeedLimits:List):
 
         LCInfo = {"readyLC": readyLC, "readyLCRef": readyLCRef, "LCBound": LCBound}
         # 算法优化结果
-        suggestLC, suggestSG = optimizer_.optimize(orgVehsInfo=orgVehsInfo, LCInfo=LCInfo)
+        suggestLC, suggestSG = optimizer_.optimize(orgVehsInfo=orgVehsInfo,speedLimits=prevSpeedLimits,LCInfo=LCInfo)
         print("onlySuggestLC:", suggestLC)
 
     # 没有可建议换道车辆，有可建议变速车辆
@@ -100,9 +100,9 @@ def callOpt(vehicles_:Vehicles,optimizer_:Optimizer,prevSpeedLimits:List):
         # 整理车辆信息，便于多线程调用
         orgVehsInfo = vehicles_.organizeInfo()
 
-        SGInfo = {"readySG": readySG, "readySGRef": readySGRef, "speedLimits": prevSpeedLimits}
+        SGInfo = {"readySG": readySG, "readySGRef": readySGRef}
         # 算法优化结果
-        suggestLC, suggestSG = optimizer_.optimize(orgVehsInfo=orgVehsInfo, SGInfo=SGInfo)
+        suggestLC, suggestSG = optimizer_.optimize(orgVehsInfo=orgVehsInfo,speedLimits=prevSpeedLimits,SGInfo=SGInfo)
         print("onlySuggestSG:", suggestSG)
 
     # 有可建议换道车辆，有可建议变速车辆
@@ -112,9 +112,10 @@ def callOpt(vehicles_:Vehicles,optimizer_:Optimizer,prevSpeedLimits:List):
         orgVehsInfo = vehicles_.organizeInfo()
 
         LCInfo = {"readyLC": readyLC, "readyLCRef": readyLCRef, "LCBound": LCBound}
-        SGInfo = {"readySG": readySG, "readySGRef": readySGRef, "speedLimits": prevSpeedLimits}
+        SGInfo = {"readySG": readySG, "readySGRef": readySGRef}
         # 算法优化结果
-        suggestLC, suggestSG = optimizer_.optimize(orgVehsInfo=orgVehsInfo, LCInfo=LCInfo, SGInfo=SGInfo)
+        suggestLC, suggestSG = optimizer_.optimize(orgVehsInfo=orgVehsInfo,speedLimits=prevSpeedLimits,
+                                                   LCInfo=LCInfo,SGInfo=SGInfo)
         print("suggestLC:", suggestLC)
         print("suggestSG:", suggestSG)
 
@@ -132,7 +133,7 @@ def run():
     step = 0
     edgeList = [('M1',), ('M2','M3','M4'), ('M5',), ('M6','M7','M8')]
     edgeRatio = [425*2,245*2+200+55*2,495*2,250*3+200*2+100*3]
-    botPos1,botPos2 = 670,1670       # todo:瓶颈点位置
+    botPos1,botPos2 = 670,1670
 
     count = [0, 0, 0, 0]
     prevSpeeds = [80.0] * 4  # 初始化各路段速度（km/h）
@@ -141,9 +142,9 @@ def run():
 
     vehicles1 = Vehicles(botPos1)
     vehicles2 = Vehicles(botPos2)
-    optimizer1 = Optimizer(cfgFileTag=1,originPopNum=20,popNum=6,iterTimes=10,
+    optimizer1 = Optimizer(cfgFileTag=1,originPopNum=8,popNum=6,iterTimes=10,
                            sameBestTimes=3,crossParam=0.6,mutationParam=0.1)
-    optimizer2 = Optimizer(cfgFileTag=2,originPopNum=20,popNum=6,iterTimes=10,
+    optimizer2 = Optimizer(cfgFileTag=2,originPopNum=8,popNum=6,iterTimes=10,
                            sameBestTimes=3,crossParam=0.6,mutationParam=0.1)
 
     start = time.time()
@@ -190,11 +191,8 @@ def run():
             vehicles1.initVehs(step,curVehs1)
             vehicles2.initVehs(step,curVehs2)
 
-            speedLimits1 = prevSpeedLimits[:3]
-            speedLimits2 = prevSpeedLimits[3:]
-
-            suggestLC1,suggestSG1 = callOpt(vehicles1,optimizer1,speedLimits1)
-            suggestLC2, suggestSG2 = callOpt(vehicles2, optimizer2, speedLimits2)
+            suggestLC1,suggestSG1 = callOpt(vehicles1,optimizer1,prevSpeedLimits)
+            suggestLC2, suggestSG2 = callOpt(vehicles2, optimizer2, prevSpeedLimits)
 
             # 主仿真执行之前发送的建议
             vehicles1.executeLCs()

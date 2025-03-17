@@ -43,9 +43,7 @@ class Vehicles:
                 self.vehs[vehId] = veh
 
             # 对车辆进行分类
-            if not veh.type:
-                veh.staticLateMerge(self.botPos)
-            else:
+            if veh.type:
                 if "M" in veh.lane:
                     self.addOptVeh(veh)
 
@@ -66,14 +64,13 @@ class Vehicles:
     '''
     判断当前车辆是否在控制范围[0,1500]内
     在optVehs中加入
-    为超过控制范围的车辆设置晚合流控制
     '''
     def addOptVeh(self,veh:Vehicle):
-        if veh.position < self.botPos-250:
-            self.optVehs[veh.vehId] = veh
-        elif self.botPos-250 <= veh.position < self.botPos-150:
-            traci.vehicle.setLaneChangeMode(veh.vehId, 0b011000001001)
-            veh.LCModel = 0b011000001001
+        if self.botPos-700 < veh.position < self.botPos-100:
+            if 'O1' in veh.vehId:
+                pass
+            else:
+                self.optVehs[veh.vehId] = veh
 
 
     '''
@@ -88,7 +85,6 @@ class Vehicles:
         readyLCRef = {}
         LCCount = 0
 
-        # optVehs确保了车辆在0-1500的Input段
         for vehId,veh in self.optVehs.items():
             if veh.LCFrequency(self.step):
                 if not veh.laneIndex:       # laneIndex为0
@@ -96,7 +92,10 @@ class Vehicles:
                 elif veh.laneIndex == 2:
                     readyLCTag = veh.LCSafetyRight(self.vehs)
                 else:
-                    readyLCTag = veh.LCSafetyLeft(self.vehs) and veh.LCSafetyRight(self.vehs)
+                    if "M6" in veh.lane:
+                        readyLCTag = veh.LCSafetyLeft(self.vehs) and veh.LCSafetyRight(self.vehs)
+                    else:
+                        readyLCTag = veh.LCSafetyRight(self.vehs)
 
                 if readyLCTag:
                     readyLC[veh.laneIndex].append(vehId)
@@ -122,7 +121,11 @@ class Vehicles:
             # 若引导车辆为CV
             if veh.type == 1:
                 reactTime = genLCReactTimes(1)
-                self.prepareLC[reactTime][vehID] = lane
+                index = reactTime[0]
+                # 如果索引超出 prepareLC 的长度，则扩展 prepareLC
+                if index >= len(self.prepareLC):
+                    self.prepareLC.extend([{} for _ in range(index - len(self.prepareLC) + 1)])
+                self.prepareLC[index][vehID] = lane
             else:
                 self.prepareLC[0][vehID] = lane
 
@@ -152,7 +155,10 @@ class Vehicles:
             # 若引导车辆为CV
             if veh.type == 1:
                 reactTime = genSGReactTimes(1)
-                self.prepareSG[reactTime][vehID] = targetSpeed
+                index = reactTime[0]
+                if index >= len(self.prepareSG):
+                    self.prepareSG.extend([{} for _ in range(index - len(self.prepareSG) + 1)])
+                self.prepareSG[index][vehID] = targetSpeed
             # 若引导车辆为CAV
             else:
                 self.prepareSG[0][vehID] = targetSpeed
@@ -162,7 +168,6 @@ class Vehicles:
     为先前收到速度引导指令的车辆执行建议
     体现不确定参数：执行偏差
     '''
-    # todo:不确定性参数分布待确定
     def executeSGs(self, executeBias):
         nowSG = self.prepareSG[0]
 
@@ -194,14 +199,16 @@ class Vehicles:
         orgVehsInfo = []
 
         for vehId,veh in self.vehs.items():
-            if "Input" in veh.lane:
-                type = veh.type
-                lane = veh.lane
-                position = veh.position
-                speed = veh.speed
-                LCModel = veh.LCModel
-                rePosition = veh.rePosition
-                orgVehsInfo.append((vehId,type,lane,position,speed,LCModel,rePosition))
+            type = veh.type
+            lane = veh.lane
+            position = veh.position
+            speed = veh.speed
+            LCModel = veh.LCModel
+            rePosition = veh.rePosition
+            ramp = False
+            if "M1_O1" in vehId:
+                ramp = True
+            orgVehsInfo.append((vehId,type,lane,position,speed,LCModel,rePosition,ramp))
 
         return orgVehsInfo
 

@@ -15,7 +15,7 @@
     </time>
 
     <output>
-        <tripinfo-output value="../output/veh2000.xml"/>
+        <tripinfo-output value="../output/vehMagic.xml"/>
     </output>
     
     <processing>

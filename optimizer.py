@@ -8,7 +8,7 @@ import random
 import numpy as np
 
 from copy import deepcopy
-from paramSetting import genLCReactTimes,genSGReactTimes,genTestSLCs,genTestSSGs
+from paramSetting import genTestSLCs,genTestSSGs
 from multiProcess import processExecute
 from toolFunction import nearestFive
 from operator import itemgetter
@@ -139,6 +139,8 @@ class Optimizer:
         for i in range(len(popLC)):
             if popLC[i] != -1:
                 veh = self.readyLC[i]
+                if self.multiTag and readyLCRef[veh][:-2] == 'M5':
+                    popLC[i] = 1-int(readyLCRef[veh][-1])
                 suggestLC[veh] = readyLCRef[veh][:-2]+'_'+str(popLC[i])
 
         return suggestLC
@@ -175,21 +177,18 @@ class Optimizer:
                 # 要进行readyLC和suggestLC的转换
                 suggestLC = self.transReadyToSuggestLC(pop[i],self.readyLCRef)
                 suggestLCs.append(suggestLC)
-            LCReactTimes = genLCReactTimes(count * 3)
         if SGTag:
             for i in range(count):
                 # 要进行readySG和suggestSG的转换
                 suggestSG = self.transReadyToSuggestSG(pop[i])
                 suggestSGs.append(suggestSG)
-            SGReactTimes = genSGReactTimes(count * 3)
 
         testSLCs = genTestSLCs(suggestLCs)
         testSSGs = genTestSSGs(suggestSGs,self.readySGRef)
 
         # 有需要预测的适应度时
         results = processExecute(processNum=count*3,cfgFileTag=self.cfgFileTag,vehs=self.orgVehsInfo,
-                                 suggestLCs=testSLCs,suggestSGs=testSSGs,speedLimits=self.speedLimits,
-                                 LCReactTimes=LCReactTimes,SGReactTimes=SGReactTimes)
+                                 suggestLCs=testSLCs,suggestSGs=testSSGs,speedLimits=self.speedLimits)
 
         # 和pop中的序号对上，赋值fit
         for i in range(count):
@@ -280,16 +279,14 @@ class Optimizer:
     def mutation(self,crossOff,LCTag,SGTag):
         if LCTag:
             if self.multiTag:
-                # 选取变道变异点，依据可选择车道变异
                 pos = random.randrange(0, len(self.readyLC))
-                if self.LCBound[0] <= pos < self.LCBound[1]:
+                if (self.LCBound[0] <= pos < self.LCBound[1]):
                     choice = [-1, 0, 2]
                     choice.remove(crossOff['LC'][pos])
                     crossOff['LC'][pos] = random.choice(choice)
                 else:
                     crossOff['LC'][pos] = -crossOff['LC'][pos]
             else:
-                # 选取变道变异点，依据可选择车道变异
                 pos = random.randrange(0, len(self.readyLC))
                 if pos < self.LCBound[0]:
                     crossOff['LC'][pos] = -crossOff['LC'][pos]
@@ -377,7 +374,7 @@ class Optimizer:
 
 
     '''优化主函数——换道及变速'''
-    def optimize(self,orgVehsInfo,LCInfo=None,SGInfo=None):
+    def optimize(self,orgVehsInfo,speedLimits,LCInfo=None,SGInfo=None):
         # 参数初始化
         print('-------------start-------------')
         self.orgVehsInfo = orgVehsInfo
@@ -390,10 +387,11 @@ class Optimizer:
             self.readyLC = LCInfo["readyLC"]
             self.LCBound = LCInfo["LCBound"]
             self.readyLCRef = LCInfo["readyLCRef"]
+            self.speedLimits = speedLimits
         if SGTag:
             self.readySG = SGInfo["readySG"]
             self.readySGRef = SGInfo["readySGRef"]
-            self.speedLimits = SGInfo["speedLimits"]
+            self.speedLimits = speedLimits
             self.curMaxSpeed = max(self.speedLimits)
 
         bestTimes = 1
@@ -457,7 +455,7 @@ class Optimizer:
             # 判断终止条件
             if bestTimes >= self.sameBestTimes:
                 break
-            # todo: 加一个阈值，然后关联分析
+            # 关联分析
             if len(bestIndividuals) >= 3 and (bestIndividuals[-1]['fit']-bestIndividuals[-3]['fit']) < 0.001:
                 self.bestIndividual = self.correlationChoose(bestIndividuals[-3:],LCTag,SGTag)
                 break
