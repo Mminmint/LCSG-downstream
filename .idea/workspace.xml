@@ -5,17 +5,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainFile/MAGIC.net.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MainFile/MAGIC.net.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainFile/MAGIC.rou.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MainFile/MAGIC.rou.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainFile/MAGIC.sumocfg" beforeDir="false" afterPath="$PROJECT_DIR$/MainFile/MAGIC.sumocfg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SubFile/SubTry.rou.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/SubTry.rou.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SubFile/SubTry1.net.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/SubTry1.net.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SubFile/SubTry2.net.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/SubTry2.net.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SubFile/addition1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/addition1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SubFile/addition2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SubFile/addition2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/multiProcess.py" beforeDir="false" afterPath="$PROJECT_DIR$/multiProcess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paramSetting.py" beforeDir="false" afterPath="$PROJECT_DIR$/paramSetting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simPredict.py" beforeDir="false" afterPath="$PROJECT_DIR$/simPredict.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vehicle.py" beforeDir="false" afterPath="$PROJECT_DIR$/vehicle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vehicles.py" beforeDir="false" afterPath="$PROJECT_DIR$/vehicles.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -135,7 +128,8 @@
       <workItem from="1741854349209" duration="7649000" />
       <workItem from="1742032606554" duration="1710000" />
       <workItem from="1742117510765" duration="1249000" />
-      <workItem from="1742191128693" duration="13087000" />
+      <workItem from="1742191128693" duration="18070000" />
+      <workItem from="1742302427326" duration="739000" />
     </task>
     <servers />
   </component>

@@ -2,6 +2,10 @@
 
 <configuration>
 
+    <random_number>
+        <seed value="45"/>
+    </random_number>
+
     <input>
         <net-file value="MAGIC.net.xml"/>
         <route-files value="MAGIC.rou.xml"/>
@@ -24,7 +28,6 @@
 
     <gui_only>
         <start value="true"/>
-
     </gui_only>
 
 </configuration>

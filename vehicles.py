@@ -62,7 +62,7 @@ class Vehicles:
 
 
     '''
-    判断当前车辆是否在控制范围[0,1500]内
+    判断当前车辆是否在控制范围内
     在optVehs中加入
     '''
     def addOptVeh(self,veh:Vehicle):
@@ -137,7 +137,13 @@ class Vehicles:
         nowLC = self.prepareLC[0]
 
         for vehID,targetLane in nowLC.items():
-            traci.vehicle.changeLane(vehID, int(targetLane[-1]), 3)
+            try:
+                traci.vehicle.changeLane(vehID, int(targetLane[-1]), 3)
+            except traci.TraCIException as e:
+                print(f"Error traci for vehicle {vehID} while LC: {e}")
+            except Exception as e:
+                print(f"Unexpected error for vehicle {vehID} while LC: {e}")
+
 
         self.prepareLC.pop(0)
         self.prepareLC.append({})
@@ -173,18 +179,23 @@ class Vehicles:
 
         if nowSG:
             for vehID, targetSpeed in nowSG.items():
-                # CAV无延迟精准执行，直接set
-                if "cav" in vehID:
-                    targetSpeed = max(0,targetSpeed)
-                    traci.vehicle.slowDown(vehID,targetSpeed,5)
-                # CV要记录目标加速度，和剩余执行时间
-                else:
-                    curSpeed = self.vehs[vehID].speed
-                    randomRatio = random.uniform(executeBias, 2-executeBias)
-                    realTargetSpeed = round(curSpeed + (targetSpeed - curSpeed)*randomRatio,3)
-                    realTargetSpeed = max(0,realTargetSpeed)
-                    traci.vehicle.slowDown(vehID,realTargetSpeed,5)
-                    # print(vehID,targetSpeed,realTargetSpeed)
+                try:
+                    # CAV无延迟精准执行，直接set
+                    if "cav" in vehID:
+                        targetSpeed = max(0,targetSpeed)
+                        traci.vehicle.slowDown(vehID,targetSpeed,5)
+                    # CV要记录目标加速度，和剩余执行时间
+                    else:
+                        curSpeed = self.vehs[vehID].speed
+                        randomRatio = random.uniform(executeBias, 2-executeBias)
+                        realTargetSpeed = round(curSpeed + (targetSpeed - curSpeed)*randomRatio,3)
+                        realTargetSpeed = max(0,realTargetSpeed)
+                        traci.vehicle.slowDown(vehID,realTargetSpeed,5)
+                        # print(vehID,targetSpeed,realTargetSpeed)
+                except traci.TraCIException as e:
+                    print(f"Error traci for vehicle {vehID} while SG: {e}")
+                except Exception as e:
+                    print(f"Unexpected error for vehicle {vehID} while SG: {e}")
 
         self.prepareSG.pop(0)
         self.prepareSG.append({})
